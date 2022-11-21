@@ -7,7 +7,6 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-
 /// @title Celo Identity
 /// @author George Simon
 /// @notice This contract is made for the dacade celo 201 challenge
@@ -15,8 +14,7 @@ contract MyNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
-    Counters.Counter private allIdentity;
-    uint reputationFee = 0.2 ether;
+    uint256 reputationFee = 0.2 ether;
 
     constructor() ERC721("CELOIDENTITY", "CIDT") {}
 
@@ -27,69 +25,52 @@ contract MyNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
         uint256 reputation;
     }
 
-    mapping(uint256 => NFT) public nfts; // mapping for storing identities
-    mapping(address => bool) private raters;
+    mapping(uint256 => NFT) private nfts; // mapping for storing identities
+    mapping(uint256 => mapping(address => bool)) private raters;
 
-
-
-
-    /// @dev minting identities
+    /// @dev allow users to mint an identity and create a profile
     function mint(string calldata uri) external payable {
         require(bytes(uri).length > 0, "Empty uri");
         _tokenIdCounter.increment();
         uint256 tokenId = _tokenIdCounter.current();
         _safeMint(msg.sender, tokenId);
         _setTokenURI(tokenId, uri);
-        newIdentity(tokenId);
-    }
-
-    /// @dev adding identity to mapping
-    function newIdentity(uint256 _tokenId) private {
         uint256 _reputation = 0;
-        nfts[allIdentity.current()] = NFT(
-            _tokenId,
-            payable(msg.sender),
-            _reputation
-        );
-        allIdentity.increment();
-        
+        nfts[tokenId] = NFT(tokenId, payable(msg.sender), _reputation);
     }
-
 
     /// @dev the owner of the contract can change the reputation fee
-    function modifyRepFee(uint _newRepfee) external onlyOwner{
+    function modifyRepFee(uint256 _newRepfee) public onlyOwner {
         reputationFee = _newRepfee;
-    } 
+    }
 
-
-    /// @dev increasing reputation points of an identity.
-    function increaseRep(uint256 _index)
-        external
-        payable
-    {
-        require(msg.value == reputationFee, "You need to pay to increase reputation");
-        require(msg.sender != nfts[_index].owner, "you can't increase the rep of your own identity");
-        require(raters[msg.sender] == false, "you can only rate once");
+    /// @dev increases reputation points of an identity.
+    /// @notice you can't increase your reputation points
+    /// @notice you can increase the reputation of a user only once
+    function increaseRep(uint256 _index) external payable {
+        require(
+            msg.value == reputationFee,
+            "You need to pay to increase reputation"
+        );
+        require(
+            msg.sender != nfts[_index].owner,
+            "you can't increase the rep of your own identity"
+        );
+        require(raters[_index][msg.sender] == false, "you can only rate once");
         nfts[_index].reputation++;
+        raters[_index][msg.sender] = true;
         (bool success, ) = payable(owner()).call{value: reputationFee}("");
         require(success, "Transfer failed");
-        raters[msg.sender] = true;
     }
 
     /// @dev returning an identity
-    function getIdentities(uint256 _index)
-        public
-        view
-        returns (NFT memory)
-    {
+    function getIdentities(uint256 _index) public view returns (NFT memory) {
         return nfts[_index];
     }
 
-
-
     /// @dev getting the length of identities on the mapping
     function getNFTlength() public view returns (uint256) {
-        return allIdentity.current();
+        return _tokenIdCounter.current();
     }
 
     // The following functions are overrides required by Solidity.
