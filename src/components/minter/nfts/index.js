@@ -58,7 +58,7 @@ const NftList = ({ minterContract, name, updateBalance }) => {
 
  
 
-  const increaseRep = async (index) => {
+  const increaseRep = useCallback(async (index) => {
     try {
       setLoading(true);
 
@@ -72,13 +72,13 @@ const NftList = ({ minterContract, name, updateBalance }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [getAssets, minterContract,performActions]);
 
   
 
   useEffect(() => {
     try {
-      if (address && minterContract) {
+      if (minterContract && address) {
         getAssets();
       }
     } catch (error) {

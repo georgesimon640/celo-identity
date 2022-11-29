@@ -8,7 +8,6 @@ import { Button } from "react-bootstrap";
 
   const NftCard = ({ nft, isOwner, increaseRep }) => {
   const { name, about, image, owner, reputation,  index } = nft;
-
   
 
   return (

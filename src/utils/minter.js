@@ -1,10 +1,8 @@
-import { create as ipfsHttpClient } from "ipfs-http-client";
 import {Web3Storage} from 'web3.storage/dist/bundle.esm.min.js'
 import axios from "axios";
 import { ethers } from "ethers";
 
 // initialize IPFS
-const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
 const getAccessToken = () => { return process.env.REACT_APP_STORAGE_API_KEY }
 const makeStorageClient = () => { return new Web3Storage({ token: getAccessToken() })}
 
@@ -90,7 +88,7 @@ export const getNfts = async (minterContract) => {
         //const owner = await fetchNftOwner(minterContract, i); 
         resolve({
           index: i,
-          reputaion: _nft.reputation,
+          reputation: _nft.reputation,
           name: meta.name,
           image: meta.image,
           about: meta.about,
