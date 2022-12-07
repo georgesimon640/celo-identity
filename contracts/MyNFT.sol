@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -9,12 +9,13 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 
 /// @title Celo Identity
 /// @author George Simon
-/// @notice This contract is made for the dacade celo 201 challenge
-contract MyNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
+/// @notice This contract is made for the dacade celo 201 challenge.
+
+contract MyNFT is ERC721Enumerable, ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIdCounter;
-    uint256 reputationFee = 0.2 ether;
+    uint256 reputationFee = 0.02 ether;
 
     constructor() ERC721("CELOIDENTITY", "CIDT") {}
 
@@ -64,9 +65,20 @@ contract MyNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     }
 
     /// @dev returning an identity
-    function getIdentities(uint256 _index) public view returns (NFT memory) {
-        return nfts[_index];
+     function getIdentities(uint _index) public view returns (
+        uint256, 
+        address, 
+        uint256
+    ) {
+        NFT memory data = nfts[_index];
+        return (
+            data.tokenId,
+            data.owner,
+            data.reputation
+        );
     }
+
+
 
     /// @dev getting the length of identities on the mapping
     function getNFTlength() public view returns (uint256) {
@@ -78,9 +90,10 @@ contract MyNFT is ERC721, ERC721Enumerable, ERC721URIStorage, Ownable {
     function _beforeTokenTransfer(
         address from,
         address to,
-        uint256 tokenId
+        uint256 tokenId,
+        uint256 batchSize
     ) internal override(ERC721, ERC721Enumerable) {
-        super._beforeTokenTransfer(from, to, tokenId);
+        super._beforeTokenTransfer(from, to, tokenId, batchSize);
     }
 
     /// @dev destroy an NFT

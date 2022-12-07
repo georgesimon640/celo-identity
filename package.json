@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@celo-tools/use-contractkit": "^3.0.0",
-    "@celo/contractkit": "^1.5.2",
+    "@celo-tools/use-contractkit": "^3.1.0",
+    "@celo/contractkit": "^3.0.0",
     "@metamask/jazzicon": "^2.0.0",
-    "@openzeppelin/contracts": "^4.4.1",
+    "@openzeppelin/contracts": "^4.8.0",
     "@popperjs/core": "^2.10.2",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
@@ -59,7 +59,7 @@
     "chai": "^4.2.0",
     "ethereum-waffle": "^3.0.0",
     "ethers": "^5.7.2",
-    "hardhat": "^2.12.2",
+    "hardhat": "^2.12.3",
     "react-error-overlay": "^6.0.9"
   }
 }

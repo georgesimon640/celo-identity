@@ -47,10 +47,12 @@ export const createNft = async (
 
       const url = `https://${file_cid}.ipfs.w3s.link/${name}.json`;
 
+
       // mint the NFT and save the IPFS url to the blockchain
       let transaction = await minterContract.methods
         .mint(url)
         .send({ from: defaultAccount });
+        console.log(url);
 
       return transaction;
     } catch (error) {
@@ -78,17 +80,17 @@ export const uploadImage = async (e) => {
 export const getNfts = async (minterContract) => {
   try {
     const nfts = [];
-    const nftsLength = await minterContract.methods.getNFTlength().call();
+    const nftsLength = await minterContract.methods.totalSupply().call();
     // contract starts minting from index 1
-    for (let i = 0; i < Number(nftsLength); i++) {
+    for (let i = 1; i <= Number(nftsLength); i++) {
       const nft = new Promise(async (resolve) => {
-        const _nft = await minterContract.methods.getIdentities(i).call();
-        const res = await minterContract.methods.tokenURI(_nft.tokenId).call();
+        const Inft = await minterContract.methods.getIdentities(i).call();
+        const res = await minterContract.methods.tokenURI(Inft[0]).call();
         const meta = await fetchNftMeta(res);
         //const owner = await fetchNftOwner(minterContract, i); 
         resolve({
           index: i,
-          reputation: _nft.reputation,
+          reputation: Inft[2],
           name: meta.name,
           image: meta.image,
           about: meta.about,
@@ -133,7 +135,7 @@ export const increaseReputation = async (
   try {
     await performActions(async (kit) => {
       try {
-        const price = ethers.utils.parseUnits(String(0.2), "ether");
+        const price = ethers.utils.parseUnits(String(0.02), "ether");
         const { defaultAccount } = kit;
         await minterContract.methods.increaseRep(index).send({ from: defaultAccount, value: price});
       } catch (error) {

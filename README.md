@@ -5,4 +5,4 @@ Celo-Identity is an NFT platform where users can mint their identity with a repu
 
 
 ### Demo
-not deployed yet
+https://sparkly-biscotti-11197b.netlify.app

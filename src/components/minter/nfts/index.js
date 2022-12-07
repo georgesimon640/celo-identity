@@ -25,19 +25,26 @@ const NftList = ({ minterContract, name, updateBalance }) => {
 
   const getAssets = useCallback(async () => {
     try {
-      setLoading(true);
+      if(minterContract){
+        setLoading(true);
 
-      // fetch all nfts from the smart contract
-      const allNfts = await getNfts(minterContract);
-      if (!allNfts) return;
-      await updateBalance();
-      setNfts(allNfts);
+        // fetch all nfts from the smart contract
+        const allNfts = await getNfts(minterContract);
+        console.log({allNfts, minterContract})
+        if (!allNfts) return
+        setNfts(allNfts);
+        //await updateBalance();
+      }
+
+          
+   
     } catch (error) {
+      console.log("the error is here");
       console.log({ error });
     } finally {
       setLoading(false);
     }
-  }, [minterContract, updateBalance]);
+  }, [minterContract]);
 
   const addNft = async (data) => {
     try {

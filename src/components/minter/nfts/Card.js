@@ -40,7 +40,7 @@ import { Button } from "react-bootstrap";
       {isOwner !== true && (
             <>
               <Button variant="primary mt-2" onClick={() => increaseRep(index)}>
-               Give Reputaion for 0.2 celo
+               Give Reputaion for 0.02 celo
               </Button>
             </>
           )}
